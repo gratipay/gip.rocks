@@ -41,15 +41,14 @@ im48 = image if w == 48 else resize(48)
 zfp = StringIO()
 with ZipFile(zfp, mode='w', compression=ZIP_DEFLATED) as zf:
     fmt = image_type.split('/')[1]
-    ext = {'png': 'png', 'jpeg': 'jpg'}[fmt]
 
     fp = StringIO()
     im160.save(fp, format=fmt)
-    zf.writestr('160.'+ext, fp.getvalue())
+    zf.writestr('160', fp.getvalue())
 
     fp = StringIO()
     im48.save(fp, format=fmt)
-    zf.writestr('48.'+ext, fp.getvalue())
+    zf.writestr('48', fp.getvalue())
 
 zfp.seek(0)
 response.headers['Content-Type'] = 'application/zip'
