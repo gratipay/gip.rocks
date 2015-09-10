@@ -1,0 +1,57 @@
+import warnings
+from cStringIO import StringIO
+from zipfile import ZipFile, ZIP_DEFLATED
+
+from aspen import Response
+from PIL import Image
+
+warnings.simplefilter('error', Image.DecompressionBombWarning)
+[---]
+request.allow('POST')
+
+if int(request.headers['Content-Length']) > 1024 * 100:
+    raise Response(413)
+
+image_type = request.headers['Content-Type']
+if image_type not in ('image/png', 'image/jpeg'):
+    raise Response(415)
+
+# Load the image.
+fp = StringIO(request.raw_body)
+fp.seek(0)
+image = Image.open(fp)
+
+# Crop to a square.
+w, h = image.size
+if w > h:
+    left = (w - h) // 2
+    right = left + h
+    image = image.crop((left, 0, right , h))
+elif h > w:
+    upper = (h - w) // 2
+    lower = upper + w
+    image = image.crop((0, upper, w, lower))
+
+# Produce resized versions.
+resize = lambda s: image.resize((s, s), resample=Image.ANTIALIAS)
+im160 = image if w == 160 else resize(160)
+im48 = image if w == 48 else resize(48)
+
+# Output.
+zfp = StringIO()
+with ZipFile(zfp, mode='w', compression=ZIP_DEFLATED) as zf:
+    fmt = image_type.split('/')[1]
+    ext = {'png': 'png', 'jpeg': 'jpg'}[fmt]
+
+    fp = StringIO()
+    im160.save(fp, format=fmt)
+    zf.writestr('160.'+ext, fp.getvalue())
+
+    fp = StringIO()
+    im48.save(fp, format=fmt)
+    zf.writestr('48.'+ext, fp.getvalue())
+
+zfp.seek(0)
+response.headers['Content-Type'] = 'application/zip'
+[---] application/zip via eval
+zfp.getvalue()
