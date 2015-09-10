@@ -9,7 +9,7 @@ warnings.simplefilter('error', Image.DecompressionBombWarning)
 [---]
 request.allow('POST')
 
-if int(request.headers['Content-Length']) > 1024 * 100:
+if int(request.headers['Content-Length']) > 256 * 1024:
     raise Response(413)
 
 image_type = request.headers['Content-Type']

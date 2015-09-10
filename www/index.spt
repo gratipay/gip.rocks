@@ -6,7 +6,7 @@
 <p>You've found the <a href="https://gratipay.com/">Gratipay</a> Image Processor!</p>
 
 <h2>Usage</h2>
-<p><code>POST</code> an image (up to 100 kB) to <code>/v1</code> with a
+<p><code>POST</code> an image (up to 256 kB) to <code>/v1</code> with a
 <code>Content-Type</code> of <code>image/png</code> or <code>image/jpeg</code>,
 and receive back a ZIP file with 160x160 and 48x48 crops in the same
 format.</p>
