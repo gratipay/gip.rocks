@@ -31,5 +31,5 @@ fp = StringIO(response.content)
 zf = zipfile.ZipFile(fp)
 
 save = lambda zname, fname: open(fname, 'w+').write(zf.open(zname).read())
-save('160.jpg', 'big.jpg')
-save('48.jpg', 'small.jpg')</pre>
+save('160', 'big.jpg')
+save('48', 'small.jpg')</pre>
