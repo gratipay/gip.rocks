@@ -24,8 +24,8 @@ from cStringIO import StringIO
 
 response = requests.post( 'http://gip.rocks/v1'
                         , data=open('foo.jpg').read()
-                        , headers={'Content-Type': 'image/jpeg'
-                         })
+                        , headers={'Content-Type': 'image/jpeg'}
+                         )
 assert response.status_code == 200
 fp = StringIO(response.content)
 zf = zipfile.ZipFile(fp)
