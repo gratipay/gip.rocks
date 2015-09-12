@@ -15,7 +15,15 @@ format.</p>
 
 <h3>cURL</h3>
 
-<pre>$ curl http://gip.rocks/v1 --data-binary "@foo.jpg" --header "Content-Type: image/jpeg"</pre>
+<pre>$ curl http://gip.rocks/v1 --data-binary "@foo.jpg" --header "Content-Type: image/jpeg" > crops.zip
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 71743    0  1670  100 70073   2148  90130 --:--:-- --:--:-- --:--:-- 90068
+$ unzip crops.zip
+Archive:  crops.zip
+  inflating: 160                     
+  inflating: 48                      
+$</pre>
 
 <h3>Python</h3>
 
