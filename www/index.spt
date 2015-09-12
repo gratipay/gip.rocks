@@ -13,7 +13,7 @@ format.</p>
 
 <h2>Examples</h2>
 
-<h3>cURL</h3>
+<h3>curl</h3>
 
 <pre>$ curl http://gip.rocks/v1 --data-binary "@foo.jpg" --header "Content-Type: image/jpeg" > crops.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
