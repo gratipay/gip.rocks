@@ -1,3 +1,3 @@
-pillow==2.9.0
+pillow==4.0.0
 aspen==0.41
 gunicorn==18.0
