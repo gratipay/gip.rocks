@@ -6,10 +6,44 @@ from aspen import Response
 from PIL import Image
 
 warnings.simplefilter('error', Image.DecompressionBombWarning)
+
+
+MAX_SIZE = 256 * 1024
+
+
+class CappedStringIO(object):
+    def __init__(self, fp, target):
+        self.io = StringIO(fp)
+        self.seek(0)
+        self.__nread = 0
+        self.__target = target
+
+    def read(self, *a, **kw):
+        out = self.io.read(*a, **kw)
+        self.__nread += len(out)
+        if self.__nread > self.__target:
+            raise Response(400)
+        return out
+
+    def reset_nread(self):
+        self.__nread = 0
+
+    def check_nread(self):
+        if self.__nread != self.__target:
+            raise Response(400)
+
+    def seek(self, *a, **kw): self.io.seek(*a, **kw)
+    def tell(self, *a, **kw): self.io.tell(*a, **kw)
+
 [---]
 request.allow('POST')
 
-if int(request.headers['Content-Length']) > 256 * 1024:
+length = request.headers['Content-Length']
+try:
+    length = int(length)
+except ValueError:
+    raise Response(400)
+if length > 256 * 1024:
     raise Response(413)
 
 image_type = request.headers['Content-Type']
@@ -17,9 +51,14 @@ if image_type not in ('image/png', 'image/jpeg'):
     raise Response(415)
 
 # Load the image.
-fp = StringIO(request.raw_body)
-fp.seek(0)
-image = Image.open(fp)
+fp = CappedStringIO(request.raw_body, length)
+try:
+    image = Image.open(fp)
+    fp.reset_nread()    # open reads *some* data
+    image.load()        # load reads *all* data ...
+except IOError:         # ... and both can raise IOError for parse errors
+    raise Response(400)
+fp.check_nread()        # still need this tho
 
 # Crop to a square.
 w, h = image.size
