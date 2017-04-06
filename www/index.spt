@@ -1,6 +1,7 @@
 """This is the Gratipay Image Processor.
 """
 [---]
+request.allow('GET')
 [---] text/html
 <h1>GIP</h1>
 <p>You've found the <a href="https://gratipay.com/">Gratipay</a> Image Processor!</p>
